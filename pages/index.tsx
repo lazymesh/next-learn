@@ -7,6 +7,9 @@ import { SmileFilled } from '@ant-design/icons'
 
 import Link from 'next/link'
 import type { NextPage } from 'next'
+import { useState } from 'react'
+import handler from './api/hello'
+import axios from 'axios'
 
 const FormItem = Form.Item
 const Option = Select.Option
@@ -15,7 +18,11 @@ const content = {
   marginTop: '100px',
 }
 
-const Home: NextPage = () => {
+interface Props {
+  name: string
+}
+
+const Home: NextPage<Props> = (props) => {
   return (
     <div style={content}>
       <div className="text-center mb-5">
@@ -25,7 +32,7 @@ const Home: NextPage = () => {
           </a>
         </Link>
 
-        <p className="mb-0 mt-3 text-disabled">Welcome to the world !</p>
+        <p className="mb-0 mt-3 text-disabled">Welcome to the world ! {props.name} </p>
       </div>
       <div>
         <Form layout="horizontal">
@@ -102,5 +109,14 @@ const Home: NextPage = () => {
     </div>
   )
 }
+
+export const getServerSideProps = async () => {
+  const { data } = await axios("http://localhost:3000/api/hello");
+  return {
+    props: {
+      name: data.name
+    }
+  };
+};
 
 export default Home
